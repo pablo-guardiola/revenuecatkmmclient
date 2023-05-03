@@ -1,0 +1,16 @@
+PODS:
+  - RevenueCatKMMClient (0.1.0-SNAPSHOT)
+
+DEPENDENCIES:
+  - RevenueCatKMMClient (from `../shared`)
+
+EXTERNAL SOURCES:
+  RevenueCatKMMClient:
+    :path: "../shared"
+
+SPEC CHECKSUMS:
+  RevenueCatKMMClient: 746ec176c97ffca6b5c2028e8c686a23f50b7362
+
+PODFILE CHECKSUM: c9cfa24d706fc2a1c13ffc20e61e8ca7aeea9302
+
+COCOAPODS: 1.12.1

@@ -1,0 +1,26 @@
+use_frameworks!
+platform :ios, '13.0'
+
+revenuecat_shared_pod_name = 'RevenueCatKMMClient'
+
+target 'iosApp' do
+  pod revenuecat_shared_pod_name, :path => '../shared'
+
+  target 'iosTests' do
+    inherit! :search_paths
+  end
+end
+
+# A workaround to make Xcode build step respecting PATH from user bash profile.
+# By default Xcode runs scripts with `/bin/sh` and does not apply `~/.profile`, `~/.bashrc` or `~/.bash_profile`.
+post_install do |install|
+  install.pods_project.targets.each do |target|
+    next unless target.name == revenuecat_shared_pod_name
+    target.build_phases.each do |build_phase|
+      next unless build_phase.name.start_with?('[CP-User] Build')
+      puts "Patching '#{build_phase.name}' build phase of '#{target.name}' build target."
+      injected_code = 'if [ -z "$REVENUECAT_LOGGED_IN" ]; then echo "Logging into a shell session with \'$SHELL -l\'"; REVENUECAT_LOGGED_IN=1 LANG=en_US.UTF-8 "${SHELL:-/bin/bash}" -lc "$0"; exit 0; fi'
+      build_phase.shell_script = "#{injected_code}\n#{build_phase.shell_script}"
+    end
+  end
+end
